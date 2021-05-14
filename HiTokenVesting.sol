@@ -1,13 +1,12 @@
-
+ 
     
     pragma solidity ^0.4.23;
     
-    // import "./SafeERC20.sol";
-    // import "./Ownable.sol";
-    // import "./SafeMath.sol";
-    import './HiDemoToken.sol';
+    import './HiToken.sol';
+    import './HiDateTimeLibrary.sol';
     
     
+
     /**
      * @title SafeERC20
      * @dev Wrappers around ERC20 operations that throw on failure.
@@ -55,7 +54,12 @@
      * owner.
      */
     contract TokenVesting is Ownable {
-        
+        // The vesting schedule is time-based (i.e. using block timestamps as opposed to e.g. block numbers), and is
+        // therefore sensitive to timestamp manipulation (which is something miners can do, to a certain degree). Therefore,
+        // it is recommended to avoid using short time durations (less than a minute). Typical vesting schemes, with a
+        // cliff period of a year and a duration of four years, are safe to use.
+        // solhint-disable not-rely-on-time
+    
         using SafeMath for uint256;
         using SafeERC20 for HiToken;
     
@@ -77,7 +81,7 @@
         mapping (address => uint256) private _refunded;
     
         /**
-         * @dev Creates a vesting contract that vests its balance of any ERC20 token to the
+         * @dev 创建一份归属权合同，将任何ERC20 token的余额归属给_beneficiary,逐渐以线性方式，直到_start + _duration 所有的余额都将归属
          * beneficiary, gradually in a linear fashion until start + duration. By then all
          * of the balance will have vested.
          * @param beneficiary address of the beneficiary to whom vested tokens are transferred
@@ -150,7 +154,7 @@
             return (_revoked[token] != 0);
         }
     
-        /**
+        /**将归属代币转让给受益人
          * @notice Transfers vested tokens to beneficiary.
          * @param token ERC20 token which is being vested
          */
@@ -166,7 +170,7 @@
             emit TokensReleased(address(token), unreleased);
         }
     
-        /**
+        /**允许所有者撤销归属。 token已经归属合约，其余归还给所有者
          * @notice Allows the owner to revoke the vesting. Tokens already vested
          * remain in the contract, the rest are returned to the owner.
          * @param token ERC20 token which is being vested
@@ -196,7 +200,7 @@
             return _vestedAmount(token);
         }
     
-        /**
+        /**计算已归属但尚未释放的金额
          * @dev Calculates the amount that has already vested but hasn't been released yet.
          * @param token ERC20 token which is being vested
          */
@@ -204,7 +208,7 @@
             return _vestedAmount(token).sub(_released[address(token)]);
         }
     
-        /**
+        /**计算已归属的金额
          * @dev Calculates the amount that has already vested.
          * @param token ERC20 token which is being vested
          */
@@ -219,8 +223,18 @@
             } else if (_revoked[address(token)] > 0) {
                 return totalBalance.mul(_revoked[address(token)].sub(_start)).div(_duration);
             } else {
-                return totalBalance.mul(block.timestamp.sub(_start)).div(_duration);
+                uint256 a = 1 * (10 ** 18);
+                uint256 ctime =  HiDateTimeLibrary.diffMinutes(_start,block.timestamp);
+                if(ctime > 0){
+                    return a * ctime;
+                }else{
+                    return 0;
+                }
+                // return totalBalance.mul(block.timestamp.sub(_start)).div(_duration);
             }
         }
+        
+        //Sale and incentive(immediately unlocked)
+        
     }
     
