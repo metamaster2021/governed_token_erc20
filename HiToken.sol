@@ -425,12 +425,12 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
     constructor() public {
         _totalHolders = 6;
 
-        holders[0] = "0xb660539dd01A78ACB3c7CF77BfcCE735081ec004"; //HI_LID
-        holders[1] = "0x8376EEF57D86A8c1DFEE8E91E75912e361A940e0"; //HI_EG
-        holders[2] = "0x572aB5eC71354Eb80e6D18e394b3e71BA8e282F5"; //HI_NLTI
-        holders[3] = "0x93aeC0ADc392C09666B4d56654F39a375AEbD4C1"; //HI_CR
-        holders[4] = "0xFb3BEb5B1258e438982956c9f023d4F7bD683E4E"; //HI_FT
-        holders[5] = "0xBF990D24F7167b97b836457d380ACCdCb1782201"; //HI_FR
+        holders[0] = 0xb660539dd01A78ACB3c7CF77BfcCE735081ec004; //HI_LID
+        holders[1] = 0x8376EEF57D86A8c1DFEE8E91E75912e361A940e0; //HI_EG
+        holders[2] = 0x572aB5eC71354Eb80e6D18e394b3e71BA8e282F5; //HI_NLTI
+        holders[3] = 0x93aeC0ADc392C09666B4d56654F39a375AEbD4C1; //HI_CR
+        holders[4] = 0xFb3BEb5B1258e438982956c9f023d4F7bD683E4E; //HI_FT
+        holders[5] = 0xBF990D24F7167b97b836457d380ACCdCb1782201; //HI_FR
 
         MintSplitHolderRatios[0] = 2720; //27.2%
         MintSplitHolderRatios[1] = 1820; //18.2%
