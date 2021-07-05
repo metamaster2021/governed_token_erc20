@@ -416,7 +416,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
 
     uint _totalHolders = 0;
     mapping (uint=> address) public holders;
-    mapping (address => uint64) public MintSplitHolderRatios;
+    mapping (address => uint256) public MintSplitHolderRatios;
     mapping (address => bool) public Proposers; 
     mapping (address => bool) public Approvers; 
     mapping (address => uint256) public Proposals; //address -> mintAmount
@@ -537,7 +537,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
       uint256 unsplitted = _amount;
       for (uint8 i = 0; i < _totalHolders - 1; i++) {
         address _to = holders[i];
-        uint256 _amt = _amount.mul(MintSplitHolderRatios).div(10000);
+        uint256 _amt = _amount.mul(MintSplitHolderRatios[i]).div(10000);
         unsplitted -= _amt;
         _mint(_to, _amt);
       }
