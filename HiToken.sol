@@ -527,6 +527,9 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
           return true;
       }
 
+      if (_totalHolders == 0)
+        return false;
+        
       if (Proposals[_proposer] < _amount)
         return false;
 
