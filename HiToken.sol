@@ -539,7 +539,6 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
         unsplitted -= _amt;
         _mint(_to, _amt);
       }
-
       _mint(_to, unsplitted); //for the last holder in the list
 
       Proposals[_proposer] -= _amount;
@@ -549,6 +548,4 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
       return true;
 
     }
-    
-
 }
