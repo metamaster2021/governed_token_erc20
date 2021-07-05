@@ -408,8 +408,8 @@ contract MintableToken is StandardToken,Ownable{
 contract HiToken is PausableToken, FrozenableToken,MintableToken
 {
 
-    string public name = "Hi Token";
-    string public symbol = "HID";
+    string public name = "hi Dollars";
+    string public symbol = "HI";
     uint256 public decimals = 18;
     uint256 INITIAL_SUPPLY = 10 *(10 ** 5) * (10 ** uint256(decimals));
 
@@ -421,7 +421,6 @@ contract HiToken is PausableToken, FrozenableToken,MintableToken
         balances[msg.sender] = totalSupply_;
         emit Transfer(address(0), msg.sender, totalSupply_);
     }
-//0x39fb96FE0b7c690199Eb453fa7C871C6bB26b765
 
     /**
      * if ether is sent to this address, send it back.
