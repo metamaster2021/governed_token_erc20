@@ -527,9 +527,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
           return true;
       }
 
-      uint256 amount = Proposals[_proposer];
-
-      if (amount < _amount)
+      if (Proposals[_proposer] < _amount)
         return false;
 
       uint256 unsplitted = _amount;
@@ -547,7 +545,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
         delete Proposals[_proposer];
 
       return true;
-      
+
     }
     
 
