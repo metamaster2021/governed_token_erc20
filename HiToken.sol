@@ -533,7 +533,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
         return false;
 
       uint256 unsplitted = _amount;
-      for (int i = 0; i < _totalHolders - 1; i++) {
+      for (uint8 i = 0; i < _totalHolders - 1; i++) {
         address _to = holders[i];
         uint256 _amt = SafeMath.div(SafeMath.mul(_amount, MintSplitHolderRatios), 10000);
         unsplitted -= _amt;
