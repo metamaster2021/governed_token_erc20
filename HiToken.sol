@@ -489,20 +489,19 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
           delete Approvers[_wallet];
     }
 
-    function setMintSplitHolder(uint index, address _wallet, uint64 _ratio, bool _to_add) public {
+    /**
+     *  to update an split holder ratio at the index
+     */
+    function setMintSplitHolder(uint index, address _wallet, uint64 _ratio) public returns (bool) {
         require(msg.sender == owner);
 
-        if (!_to_add) {
-          if (MintSplitHolderRatios[_wallet] > 0)
-            delete MintSplitHolderRatios[_wallet];
+        if (index > _totalHolders)
+            return false;
 
-            return;
-        }
-
-        if (MintSplitHolderRatios[_wallet] == 0) 
-          _totalHolders += 1;
-
+        holders[index] = _wallet;
         MintSplitHolderRatios[_wallet] = _ratio;
+
+        return true;
     }
 
     /**
@@ -529,7 +528,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
 
       if (_totalHolders == 0)
         return false;
-        
+
       if (Proposals[_proposer] < _amount)
         return false;
 
