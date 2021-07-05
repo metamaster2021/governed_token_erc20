@@ -345,7 +345,7 @@ contract FrozenableToken is Ownable
 /**
 *------------------可增发token----------------------------
 */
-contract MintableToken is StandardToken,Ownable{
+contract MintableToken is StandardToken, Ownable {
     
       event Mint(address indexed to, uint256 amount);
       event MintFinished();
@@ -360,7 +360,7 @@ contract MintableToken is StandardToken,Ownable{
       }
     
       modifier hasMintPermission() {
-        //owner只能为msg.sender
+        //msg.sender只能为owner
         require(msg.sender == owner);
         _;
       }
@@ -371,7 +371,7 @@ contract MintableToken is StandardToken,Ownable{
       * @param _amount 增发的token数量.
       * @return A boolean that indicates if the operation was successful.
       */
-      function _mint(address _to,uint256 _amount) hasMintPermission canMint public returns (bool){
+      function _mint(address _to, uint256 _amount) internal returns (bool){
           
            // 总发行量增加_amount数量的token
             totalSupply_ = totalSupply_.add(_amount);
@@ -405,18 +405,40 @@ contract MintableToken is StandardToken,Ownable{
  * @dev Global digital painting asset platform token.
  * @author HiToken 
  */
-contract HiToken is PausableToken, FrozenableToken,MintableToken
+contract HiToken is PausableToken, FrozenableToken, MintableToken
 {
-
     string public name = "hi Dollars";
     string public symbol = "HI";
     uint256 public decimals = 18;
     uint256 INITIAL_SUPPLY = 10 *(10 ** 5) * (10 ** uint256(decimals));
 
+    uint _totalHolders = 0;
+    mapping (uint=> address) public holders;
+    mapping (address => uint64) public MintSplitHolderRatios;
+    mapping (address => bool) public Proposers; 
+    mapping (address => bool) public Approvers; 
+    mapping (address => uint256) public Proposals; //address -> mintAmount
+
     /**
      * @dev Initializes the total release
      */
     constructor() public {
+        _totalHolders = 6;
+
+        holders[0] = "0xb660539dd01A78ACB3c7CF77BfcCE735081ec004"; //HI_LID
+        holders[1] = "0x8376EEF57D86A8c1DFEE8E91E75912e361A940e0"; //HI_EG
+        holders[2] = "0x572aB5eC71354Eb80e6D18e394b3e71BA8e282F5"; //HI_NLTI
+        holders[3] = "0x93aeC0ADc392C09666B4d56654F39a375AEbD4C1"; //HI_CR
+        holders[4] = "0xFb3BEb5B1258e438982956c9f023d4F7bD683E4E"; //HI_FT
+        holders[5] = "0xBF990D24F7167b97b836457d380ACCdCb1782201"; //HI_FR
+
+        MintSplitHolderRatios[0] = 2720; //27.2%
+        MintSplitHolderRatios[1] = 1820; //18.2%
+        MintSplitHolderRatios[2] = 1820; //18.2%
+        MintSplitHolderRatios[3] = 1360; //13.6%
+        MintSplitHolderRatios[4] = 1360; //13.6%
+        MintSplitHolderRatios[5] = 910;  //9.1%
+        
         totalSupply_ = INITIAL_SUPPLY;
         balances[msg.sender] = totalSupply_;
         emit Transfer(address(0), msg.sender, totalSupply_);
@@ -449,12 +471,84 @@ contract HiToken is PausableToken, FrozenableToken,MintableToken
     }        
     
    
-    
-    
-    // function CalculatingTime(uint fromTimestamp,uint toTimestamp)view public  returns (uint){
-        
-    //     return HiDateTimeLibrary.diffMinutes(fromTimestamp,toTimestamp);
-    // }
+    function setProposer(address _wallet, bool _to_add) public{
+        require(msg.sender == owner);
+
+        Proposers[_wallet] = _to_add;
+
+        if (!_to_add)
+          delete Proposers[_wallet];
+    }
+
+    function setApprover(address _wallet, bool _to_approve) public {
+        require(msg.sender == owner);
+
+        Approvers[_wallet] = _to_approve;
+
+        if (!_to_approve)
+          delete Approvers[_wallet];
+    }
+
+    function setMintSplitHolder(uint index, address _wallet, uint64 _ratio, bool _to_add) public {
+        require(msg.sender == owner);
+
+        if (!_to_add) {
+          if (MintSplitHolderRatios[_wallet] > 0)
+            delete MintSplitHolderRatios[_wallet];
+
+            return;
+        }
+
+        if (MintSplitHolderRatios[_wallet] == 0) 
+          _totalHolders += 1;
+
+        MintSplitHolderRatios[_wallet] = _ratio;
+    }
+
+    /**
+    * @dev propose to mint
+    * @param _amount amount to mint
+    * @return mint propose ID
+    */
+    function proposeMint(uint256 _amount) hasMintPermission canMint public returns(bool) {
+        if (!Proposers[msg.sender])
+          return false; //non-proposed due to permission issue
+
+        Proposals[msg.sender] = _amount; //mint once for a propoer at a time otherwise would be overwritten
+        return true;
+    }
+
+    function approveMint(address _proposer, uint256 _amount, bool _to_approve) public returns(bool) {
+      if (!Approvers[msg.sender])
+          return false; //non-proposed due to permission issue
+
+      if (!_to_approve) {
+          delete Proposals[_proposer];
+          return true;
+      }
+
+      uint256 amount = Proposals[_proposer];
+
+      if (amount < _amount)
+        return false;
+
+      uint256 unsplitted = _amount;
+      for (int i = 0; i < _totalHolders - 1; i++) {
+        address _to = holders[i];
+        uint256 _amt = SafeMath.div(SafeMath.mul(_amount, MintSplitHolderRatios), 10000);
+        unsplitted -= _amt;
+        _mint(_to, _amt);
+      }
+
+      _mint(_to, unsplitted); //for the last holder in the list
+
+      Proposals[_proposer] -= _amount;
+      if (Proposals[_proposer] == 0)
+        delete Proposals[_proposer];
+
+      return true;
+      
+    }
     
 
 }
