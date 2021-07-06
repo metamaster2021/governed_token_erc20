@@ -343,8 +343,10 @@ contract FrozenableToken is Ownable
           delete Approvers[_wallet];
     }
 
-    function freezeAccount(address _to, bool _freeze) public onlyOwner {
+    function freezeAccount(address _to, bool _freeze) public {
+        require(true == Approvers[msg.sender]);
         require(_to != address(0));
+
         frozenAccount[_to] = _freeze;
         emit FrozenFunds(_to, _freeze);
     }
