@@ -323,7 +323,8 @@ contract PausableToken is StandardToken, Pausable
  */
 contract FrozenableToken is Ownable 
 {
-    
+    mapping (address => bool) public Approvers; 
+
     mapping (address => bool) public frozenAccount;
 
     event FrozenFunds(address indexed to, bool frozen);
@@ -331,6 +332,15 @@ contract FrozenableToken is Ownable
     modifier whenNotFrozen(address _who) {
       require(!frozenAccount[msg.sender] && !frozenAccount[_who]);
       _;
+    }
+
+    function setApprover(address _wallet, bool _approve) public {
+        require(msg.sender == owner);
+
+        Approvers[_wallet] = _approve;
+
+        if (!_approve)
+          delete Approvers[_wallet];
     }
 
     function freezeAccount(address _to, bool _freeze) public onlyOwner {
@@ -391,7 +401,6 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
     mapping (uint=> address) public holders;
     mapping (address => uint256) public MintSplitHolderRatios;
     mapping (address => bool) public Proposers; 
-    mapping (address => bool) public Approvers; 
     mapping (address => uint256) public Proposals; //address -> mintAmount
 
     /**
@@ -453,15 +462,6 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
 
         if (!_on)
           delete Proposers[_wallet];
-    }
-
-    function setApprover(address _wallet, bool _approve) public {
-        require(msg.sender == owner);
-
-        Approvers[_wallet] = _approve;
-
-        if (!_approve)
-          delete Approvers[_wallet];
     }
 
     /**
