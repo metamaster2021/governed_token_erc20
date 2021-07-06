@@ -348,22 +348,6 @@ contract FrozenableToken is Ownable
 contract MintableToken is StandardToken, Ownable {
     
       event Mint(address indexed to, uint256 amount);
-      event MintFinished();
-      
-      //初始化增发状态为false
-      bool public mintingFinished = false;
-    
-      modifier canMint() {
-        // 检查没有增发结束
-        require(!mintingFinished);
-        _;
-      }
-    
-      modifier hasMintPermission() {
-        //msg.sender只能为owner
-        require(msg.sender == owner);
-        _;
-      }
 
       /**
       * @dev 增发token方法
@@ -385,17 +369,6 @@ contract MintableToken is StandardToken, Ownable {
        
       }
 
-      /**
-      * @dev 停止增发新token.
-      * @return True if the operation was successful.
-      */
-      function finishMinting() onlyOwner canMint public returns (bool) {
-        // 改变增发状态为已完成
-        mintingFinished = true;
-        // 触发增发已完成事件
-        emit MintFinished();
-        return true;
-      }
 }
 
 
