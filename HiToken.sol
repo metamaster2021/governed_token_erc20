@@ -485,14 +485,14 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
     * @return mint propose ID
     */
     function proposeMint(uint256 _amount) public returns(bool) {
-        require(true == Proposers[msg.sender]); //non-proposed due to permission issue
+        require(true == Proposers[msg.sender]);
 
         Proposals[msg.sender] = _amount; //mint once for a propoer at a time otherwise would be overwritten
         return true;
     }
 
     function approveMint(address _proposer, uint256 _amount, bool _approve) public returns(bool) {
-      require(true == Approvers[msg.sender]); //non-proposed due to permission issue
+      require(true == Approvers[msg.sender]);
 
       if (!_approve) {
           delete Proposals[_proposer];
