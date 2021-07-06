@@ -385,8 +385,8 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
     string public name = "hi Dollars";
     string public symbol = "HI";
     uint256 public decimals = 18;
-    uint256 INITIAL_SUPPLY = 10 *(10 ** 5) * (10 ** uint256(decimals));
-
+    // uint256 INITIAL_SUPPLY = 10 *(10 ** 5) * (10 ** uint256(decimals));
+    uint256 INITIAL_SUPPLY = 0;
     uint totalHolders_ = 0;
     mapping (uint=> address) public holders;
     mapping (address => uint256) public MintSplitHolderRatios;
@@ -412,7 +412,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
         MintSplitHolderRatios[2] = 1820; //18.2%
         MintSplitHolderRatios[3] = 1360; //13.6%
         MintSplitHolderRatios[4] = 1360; //13.6%
-        MintSplitHolderRatios[5] = 910;  //9.1%
+        MintSplitHolderRatios[5] = 910;  //9.1%, remaining
         
         totalSupply_ = INITIAL_SUPPLY;
         balances[msg.sender] = totalSupply_;
