@@ -407,12 +407,12 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
         holders[4] = 0xFb3BEb5B1258e438982956c9f023d4F7bD683E4E; //HI_FT
         holders[5] = 0xBF990D24F7167b97b836457d380ACCdCb1782201; //HI_FR
 
-        MintSplitHolderRatios[0] = 2720; //27.2%
-        MintSplitHolderRatios[1] = 1820; //18.2%
-        MintSplitHolderRatios[2] = 1820; //18.2%
-        MintSplitHolderRatios[3] = 1360; //13.6%
-        MintSplitHolderRatios[4] = 1360; //13.6%
-        MintSplitHolderRatios[5] = 910;  //9.1%, remaining
+        MintSplitHolderRatios[ holders[0] ] = 2720; //27.2%
+        MintSplitHolderRatios[ holders[1] ] = 1820; //18.2%
+        MintSplitHolderRatios[ holders[2] ] = 1820; //18.2%
+        MintSplitHolderRatios[ holders[3] ] = 1360; //13.6%
+        MintSplitHolderRatios[ holders[4] ] = 1360; //13.6%
+        MintSplitHolderRatios[ holders[5] ] = 910;  //9.1%, remaining
         
         totalSupply_ = INITIAL_SUPPLY;
         balances[msg.sender] = totalSupply_;
