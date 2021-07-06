@@ -484,7 +484,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
     * @param _amount amount to mint
     * @return mint propose ID
     */
-    function proposeMint(uint256 _amount) hasMintPermission canMint public returns(bool) {
+    function proposeMint(uint256 _amount) public returns(bool) {
         require(true == Proposers[msg.sender]); //non-proposed due to permission issue
 
         Proposals[msg.sender] = _amount; //mint once for a propoer at a time otherwise would be overwritten
