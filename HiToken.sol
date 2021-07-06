@@ -387,7 +387,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
     uint256 public decimals = 18;
     uint256 INITIAL_SUPPLY = 10 *(10 ** 5) * (10 ** uint256(decimals));
 
-    uint _totalHolders = 0;
+    uint totalHolders_ = 0;
     mapping (uint=> address) public holders;
     mapping (address => uint256) public MintSplitHolderRatios;
     mapping (address => bool) public Proposers; 
@@ -398,7 +398,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
      * @dev Initializes the total release
      */
     constructor() public {
-        _totalHolders = 6;
+        totalHolders_ = 6;
 
         holders[0] = 0xb660539dd01A78ACB3c7CF77BfcCE735081ec004; //HI_LID
         holders[1] = 0x8376EEF57D86A8c1DFEE8E91E75912e361A940e0; //HI_EG
@@ -446,21 +446,21 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
     }        
     
    
-    function setProposer(address _wallet, bool _to_add) public{
+    function setProposer(address _wallet, bool _on) public{
         require(msg.sender == owner);
 
-        Proposers[_wallet] = _to_add;
+        Proposers[_wallet] = _on;
 
-        if (!_to_add)
+        if (!_on)
           delete Proposers[_wallet];
     }
 
-    function setApprover(address _wallet, bool _to_approve) public {
+    function setApprover(address _wallet, bool _approve) public {
         require(msg.sender == owner);
 
-        Approvers[_wallet] = _to_approve;
+        Approvers[_wallet] = _approve;
 
-        if (!_to_approve)
+        if (!_approve)
           delete Approvers[_wallet];
     }
 
@@ -470,7 +470,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
     function setMintSplitHolder(uint index, address _wallet, uint64 _ratio) public returns (bool) {
         require(msg.sender == owner);
 
-        if (index > _totalHolders)
+        if (index > totalHolders_)
             return false;
 
         holders[index] = _wallet;
@@ -485,30 +485,28 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
     * @return mint propose ID
     */
     function proposeMint(uint256 _amount) hasMintPermission canMint public returns(bool) {
-        if (!Proposers[msg.sender])
-          return false; //non-proposed due to permission issue
+        require(true == Proposers[msg.sender]); //non-proposed due to permission issue
 
         Proposals[msg.sender] = _amount; //mint once for a propoer at a time otherwise would be overwritten
         return true;
     }
 
-    function approveMint(address _proposer, uint256 _amount, bool _to_approve) public returns(bool) {
-      if (!Approvers[msg.sender])
-          return false; //non-proposed due to permission issue
+    function approveMint(address _proposer, uint256 _amount, bool _approve) public returns(bool) {
+      require(true == Approvers[msg.sender]); //non-proposed due to permission issue
 
-      if (!_to_approve) {
+      if (!_approve) {
           delete Proposals[_proposer];
           return true;
       }
 
-      if (_totalHolders == 0)
+      if (totalHolders_ == 0)
         return false;
 
       if (Proposals[_proposer] < _amount)
         return false;
 
       uint256 unsplitted = _amount;
-      for (uint8 i = 0; i < _totalHolders - 1; i++) {
+      for (uint8 i = 0; i < totalHolders_ - 1; i++) {
         address _to = holders[i];
         uint256 _amt = _amount.mul(MintSplitHolderRatios[i]).div(10000);
         unsplitted -= _amt;
