@@ -466,11 +466,12 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
 
     /**
      *  to update an split holder ratio at the index
+     *  index ranges from 0..totalHolders -1
      */
     function setMintSplitHolder(uint index, address _wallet, uint64 _ratio) public returns (bool) {
         require(msg.sender == owner);
 
-        if (index > totalHolders_)
+        if (index > totalHolders_ - 1)
             return false;
 
         holders[index] = _wallet;
