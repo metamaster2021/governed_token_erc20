@@ -397,9 +397,11 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
     uint256 public decimals = 18;
     // uint256 INITIAL_SUPPLY = 10 *(10 ** 5) * (10 ** uint256(decimals));
     uint256 INITIAL_SUPPLY = 0;
-    uint totalHolders_ = 0;
-    mapping (uint=> address) public holders;
-    mapping (address => uint256) public MintSplitHolderRatios;
+    uint totalHolders_ = 6;  // total number is fixed, wont change in future
+                             // but holders address can be updated thru setMintSplitHolder method
+
+    mapping (uint => address) public holders;
+    mapping (address => uint256) public MintSplitHolderRatios; //address -> ratio boosted by 10000
     mapping (address => bool) public Proposers; 
     mapping (address => uint256) public Proposals; //address -> mintAmount
 
@@ -407,8 +409,6 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
      * @dev Initializes the total release
      */
     constructor() public {
-        totalHolders_ = 6;
-
         holders[0] = 0xb660539dd01A78ACB3c7CF77BfcCE735081ec004; //HI_LID
         holders[1] = 0x8376EEF57D86A8c1DFEE8E91E75912e361A940e0; //HI_EG
         holders[2] = 0x572aB5eC71354Eb80e6D18e394b3e71BA8e282F5; //HI_NLTI
@@ -421,7 +421,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
         MintSplitHolderRatios[ holders[2] ] = 1820; //18.2%
         MintSplitHolderRatios[ holders[3] ] = 1360; //13.6%
         MintSplitHolderRatios[ holders[4] ] = 1360; //13.6%
-        MintSplitHolderRatios[ holders[5] ] = 910;  //9.1%, remaining
+        MintSplitHolderRatios[ holders[5] ] = 920;  //9.2%, remaining
         
         totalSupply_ = INITIAL_SUPPLY;
         balances[msg.sender] = totalSupply_;
@@ -472,7 +472,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
         require(msg.sender == owner);
 
         if (index > totalHolders_ - 1)
-            return false;
+          return false;
 
         holders[index] = _wallet;
         MintSplitHolderRatios[_wallet] = _ratio;
