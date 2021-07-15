@@ -401,7 +401,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
                              // but holders address can be updated thru setMintSplitHolder method
 
     mapping (uint => address) public holders;
-    mapping (address => uint256) public MintSplitHolderRatios; //address -> ratio boosted by 10000
+    mapping (uint => uint256) public MintSplitHolderRatios; //index -> ratio boosted by 10000
     mapping (address => bool) public Proposers; 
     mapping (address => uint256) public Proposals; //address -> mintAmount
 
@@ -416,12 +416,12 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
         holders[4] = 0xFb3BEb5B1258e438982956c9f023d4F7bD683E4E; //HI_FT
         holders[5] = 0xBF990D24F7167b97b836457d380ACCdCb1782201; //HI_FR
 
-        MintSplitHolderRatios[ holders[0] ] = 2720; //27.2%
-        MintSplitHolderRatios[ holders[1] ] = 1820; //18.2%
-        MintSplitHolderRatios[ holders[2] ] = 1820; //18.2%
-        MintSplitHolderRatios[ holders[3] ] = 1360; //13.6%
-        MintSplitHolderRatios[ holders[4] ] = 1360; //13.6%
-        MintSplitHolderRatios[ holders[5] ] = 920;  //9.2%, remaining
+        MintSplitHolderRatios[ 0 ] = 2720; //27.2%
+        MintSplitHolderRatios[ 1 ] = 1820; //18.2%
+        MintSplitHolderRatios[ 2 ] = 1820; //18.2%
+        MintSplitHolderRatios[ 3 ] = 1360; //13.6%
+        MintSplitHolderRatios[ 4 ] = 1360; //13.6%
+        MintSplitHolderRatios[ 5 ] = 920;  //9.2%, remaining
         
         totalSupply_ = INITIAL_SUPPLY;
         balances[msg.sender] = totalSupply_;
@@ -475,7 +475,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
           return false;
 
         holders[index] = _wallet;
-        MintSplitHolderRatios[_wallet] = _ratio;
+        MintSplitHolderRatios[ index ] = _ratio;
 
         return true;
     }
@@ -513,6 +513,8 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
         unsplitted -= _amt;
         _mint(_to, _amt);
       }
+
+      _to = holders[totalHolders_ - 1];
       _mint(_to, unsplitted); //for the last holder in the list
 
       Proposals[_proposer] -= _amount;
