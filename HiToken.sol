@@ -474,7 +474,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
         if (index > totalHolders_ - 1)
           return false;
 
-        holders[index] = _wallet;
+        holders[ index ] = _wallet;
         MintSplitHolderRatios[ index ] = _ratio;
 
         return true;
