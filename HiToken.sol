@@ -493,18 +493,16 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
     }
 
     function approveMint(address _proposer, uint256 _amount, bool _approve) public returns(bool) {
-      require(true == Approvers[msg.sender]);
+      require( Approvers[msg.sender], "None-approver not allowed" );
 
       if (!_approve) {
           delete Proposals[_proposer];
           return true;
       }
 
-      if (totalHolders_ == 0)
-        return false;
-
-      if (Proposals[_proposer] < _amount)
-        return false;
+      require( _amount > 0, "zero amount not allowed" );
+      require( totalHolders_ > 0, "Err: none account holder" );
+      require( Proposals[_proposer] >= _amount, "Over-approve mint amount not allowed" );
 
       uint256 unsplitted = _amount;
       for (uint8 i = 0; i < totalHolders_ - 1; i++) {
