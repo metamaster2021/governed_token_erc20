@@ -1,3 +1,5 @@
+// SPDX-License-Identifier: MIT
+
 pragma solidity ^0.8.0;
 
 import './SafeMath.sol';
@@ -429,8 +431,8 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
     /**
      * if ether is sent to this address, send it back.
      */
-    function() public payable {
-        revert();
+    fallback() external payable {
+      revert();
     }
  
     /**
