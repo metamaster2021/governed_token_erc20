@@ -493,7 +493,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
       }
 
       require( _amount > 0, "zero amount not allowed" );
-      require( totalHolders_ > 0, "None account holder found" );
+      require( totalHolders_ > 0, "Err: none account holder" );
       require( Proposals[_proposer] >= _amount, "Over-approve mint amount not allowed" );
 
       uint256 unsplitted = _amount;
