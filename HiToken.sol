@@ -29,14 +29,6 @@ contract Ownable
     owner = msg.sender;
   }
   
-  
-   /**
-     * @dev Returns the address of the current owner.
-     */
-    function owner() public view returns (address) {
-        return owner;
-    }
-  
 
   /**
    * @dev Throws if called by any account other than the owner.
@@ -505,8 +497,9 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
       require( Proposals[_proposer] >= _amount, "Over-approve mint amount not allowed" );
 
       uint256 unsplitted = _amount;
+      address _to;
       for (uint8 i = 0; i < totalHolders_ - 1; i++) {
-        address _to = holders[i];
+        _to = holders[i];
         uint256 _amt = _amount.mul(MintSplitHolderRatios[i]).div(10000);
         unsplitted -= _amt;
         _mint(_to, _amt);
