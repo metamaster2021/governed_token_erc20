@@ -1,4 +1,4 @@
-pragma solidity ^0.4.23;
+pragma solidity ^0.8.0;
 
 import './SafeMath.sol';
 
@@ -353,28 +353,26 @@ contract FrozenableToken is Ownable
 
 
 /**
-*------------------可增发token----------------------------
+*------------------Mintable token----------------------------
 */
 contract MintableToken is StandardToken, Ownable {
     
       event Mint(address indexed to, uint256 amount);
 
       /**
-      * @dev 增发token方法
-      * @param _to 获取增发token的地址_to.
-      * @param _amount 增发的token数量.
+      * @dev Mint method
+      * @param _to newly minted tokens will be sent to this address 
+      * @param _amount amount to mint
       * @return A boolean that indicates if the operation was successful.
       */
       function _mint(address _to, uint256 _amount) internal returns (bool){
           
-           // 总发行量增加_amount数量的token
             totalSupply_ = totalSupply_.add(_amount);
-            // 获取增发的地址增加_amount数量的token
             balances[_to] = balances[_to].add(_amount);
-            // 触发增发事件
+
             emit Mint(_to, _amount);
-            // 触发Transfer事件
             emit Transfer(address(0), _to, _amount);
+
             return true;
        
       }
