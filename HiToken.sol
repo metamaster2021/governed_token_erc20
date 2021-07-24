@@ -326,9 +326,7 @@ contract FrozenableToken is Ownable
       _;
     }
 
-    function setApprover(address _wallet, bool _approve) public {
-        require(msg.sender == owner, "lack permissioin");
-
+    function setApprover(address _wallet, bool _approve) public onlyOwner {
         Approvers[_wallet] = _approve;
 
         if (!_approve)
@@ -336,7 +334,7 @@ contract FrozenableToken is Ownable
     }
 
     function freezeAccount(address _to, bool _freeze) public {
-        require(true == Approvers[msg.sender], "lack permissioin");
+        require(Approvers[msg.sender], "lack approvers permission");
         require(_to != address(0), "not to self");
 
         frozenAccount[_to] = _freeze;
