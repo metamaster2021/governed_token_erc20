@@ -21,7 +21,7 @@ library SafeMath
     }
 
     c = _a * _b;
-    assert(c / _a == _b);
+    require(c / _a == _b);
     return c;
   }
 
@@ -39,7 +39,7 @@ library SafeMath
     * @dev Subtracts two numbers, throws on overflow (i.e. if subtrahend is greater than minuend).
     */
   function sub(uint256 a, uint256 b) internal pure returns (uint256) {
-    assert(b <= a);
+    require(b <= a);
     return a - b;
   }
 
@@ -48,7 +48,7 @@ library SafeMath
    */
   function add(uint256 a, uint256 b) internal pure returns (uint256 c) {
     c = a + b;
-    assert(c >= a);
+    require(c >= a);
     return c;
   }
   
