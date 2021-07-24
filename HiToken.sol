@@ -164,7 +164,6 @@ contract BasicToken is ERC20Basic
   */
   function transfer(address _to, uint256 _value) public returns (bool) {
     require(_to != address(0), "not to self");
-    require(_value <= balances[msg.sender], "overwithdrawn");
 
     balances[msg.sender] = balances[msg.sender].sub(_value);
     balances[_to] = balances[_to].add(_value);
