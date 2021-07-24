@@ -120,7 +120,6 @@ contract Pausable is Ownable
  */
 contract ERC20Basic 
 {
-  function totalSupply() public view returns (uint256);
   function balanceOf(address who) public view returns (uint256);
   function transfer(address to, uint256 value) public returns (bool);
   event Transfer(address indexed from, address indexed to, uint256 value);
@@ -156,14 +155,7 @@ contract BasicToken is ERC20Basic
 
   mapping(address => uint256) balances;
 
-  uint256 totalSupply_;
-
-  /**
-  * @dev total number of tokens in existence
-  */
-  function totalSupply() public view returns (uint256) {
-    return totalSupply_;
-  }
+  uint256 public totalSupply;
 
   /**
   * @dev transfer token for a specified address
@@ -370,7 +362,7 @@ contract MintableToken is StandardToken, Ownable {
       */
       function _mint(address _to, uint256 _amount) internal returns (bool){
           
-            totalSupply_ = totalSupply_.add(_amount);
+            totalSupply = totalSupply.add(_amount);
             balances[_to] = balances[_to].add(_amount);
 
             emit Mint(_to, _amount);
@@ -424,9 +416,9 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
         MintSplitHolderRatios[4] = 1360; //13.6%
         MintSplitHolderRatios[5] = 920;  //9.2%, remaining
         
-        totalSupply_ = INITIAL_SUPPLY;
-        balances[msg.sender] = totalSupply_;
-        emit Transfer(address(0), msg.sender, totalSupply_);
+        totalSupply = INITIAL_SUPPLY;
+        balances[msg.sender] = totalSupply;
+        emit Transfer(address(0), msg.sender, totalSupply);
     }
 
     /**
