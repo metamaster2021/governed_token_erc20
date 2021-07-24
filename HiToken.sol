@@ -14,6 +14,7 @@ import './SafeMath.sol';
 contract Ownable 
 {
   address public owner;
+  address proposedOwner;
 
   event OwnershipRenounced(address indexed previousOwner);
   event OwnershipTransferred(
@@ -39,11 +40,19 @@ contract Ownable
   }
 
   /**
-   * @dev Allows the current owner to transfer control of the contract to a newOwner.
-   * @param _newOwner The address to transfer ownership to.
+   * @dev propose a new owner by an existing owner
+   * @param _newOwner The address proposed to transfer ownership to.
    */
-  function transferOwnership(address _newOwner) public onlyOwner {
-    _transferOwnership(_newOwner);
+  function proposeOwner(address _newOwner) public onlyOnwer {
+    proposedOwner = _newOwner;
+  }
+
+  /**
+   * @dev Allows the current owner to transfer control of the contract to a newOwner.
+   */
+  function takeOwnership() public {
+    require(proposedOwner == msg.sender, "not the proposed owner");
+    _transferOwnership(proposedOwner);
   }
 
   /**
@@ -68,7 +77,7 @@ contract Pausable is Ownable
   event Pause();
   event Unpause();
 
-  bool public paused = false;
+  bool public paused; //default as false
 
   /**
    * @dev Modifier to make a function callable only when the contract is not paused.
