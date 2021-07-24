@@ -382,10 +382,10 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
 {
     using SafeMath for uint256;
 
-    string public name = "hi Dollars for test";
-    string public symbol = "BI";
-    uint256 public decimals = 18;
-    uint public totalHolders = 6; // total number is fixed, wont change in future
+    string public constant name = "hi Dollars";
+    string public constant symbol = "HI";
+    uint256 public constant decimals = 18;
+    uint public constant totalHolders = 6; // total number is fixed, wont change in future
                                   // but holders address can be updated thru setMintSplitHolder method
 
     // uint256 INITIAL_SUPPLY = 10 *(10 ** 5) * (10 ** uint256(decimals));
