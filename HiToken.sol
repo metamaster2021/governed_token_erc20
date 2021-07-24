@@ -488,7 +488,6 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
       }
 
       require( _amount > 0, "zero amount not allowed" );
-      require( totalHolders > 0, "Err: none account holder" );
       require( Proposals[_proposer] >= _amount, "Over-approve mint amount not allowed" );
 
       uint256 unsplitted = _amount;
@@ -496,7 +495,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
       for (uint8 i = 0; i < totalHolders - 1; i++) {
         _to = holders[i];
         uint256 _amt = _amount.mul(MintSplitHolderRatios[i]).div(10000);
-        unsplitted -= _amt;
+        unsplitted.sub(_amt);
         _mint(_to, _amt);
       }
 
