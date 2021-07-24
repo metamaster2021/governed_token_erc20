@@ -43,7 +43,7 @@ contract Ownable
    * @dev propose a new owner by an existing owner
    * @param _newOwner The address proposed to transfer ownership to.
    */
-  function proposeOwner(address _newOwner) public onlyOnwer {
+  function proposeOwner(address _newOwner) public onlyOwner {
     proposedOwner = _newOwner;
   }
 
@@ -447,9 +447,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
     // }        
     
    
-    function setProposer(address _wallet, bool _on) public{
-        require(msg.sender == owner, "lack permission");
-
+    function setProposer(address _wallet, bool _on) public onlyOwner {
         Proposers[_wallet] = _on;
 
         if (!_on)
@@ -460,9 +458,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
      *  to update an split holder ratio at the index
      *  index ranges from 0..totalHolders -1
      */
-    function setMintSplitHolder(uint index, address _wallet, uint64 _ratio) public returns (bool) {
-        require(msg.sender == owner, "lack permissioin");
-
+    function setMintSplitHolder(uint index, address _wallet, uint64 _ratio) public onlyOwner returns (bool) {
         if (index > totalHolders_ - 1)
           return false;
 
@@ -478,7 +474,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
     * @return mint propose ID
     */
     function proposeMint(uint256 _amount) public returns(bool) {
-        require(true == Proposers[msg.sender], "lack permissioin");
+        require(true == Proposers[msg.sender], "Non-proposer not allowed");
 
         Proposals[msg.sender] = _amount; //mint once for a propoer at a time otherwise would be overwritten
         return true;
