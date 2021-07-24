@@ -34,7 +34,7 @@ contract Ownable
    * @dev Throws if called by any account other than the owner.
    */
   modifier onlyOwner() {
-    require(msg.sender == owner);
+    require(msg.sender == owner, "lack permissioin");
     _;
   }
 
@@ -51,7 +51,7 @@ contract Ownable
    * @param _newOwner The address to transfer ownership to.
    */
   function _transferOwnership(address _newOwner) internal {
-    require(_newOwner != address(0));
+    require(_newOwner != address(0), "lack permissioin");
     emit OwnershipTransferred(owner, _newOwner);
     owner = _newOwner;
   }
@@ -74,7 +74,7 @@ contract Pausable is Ownable
    * @dev Modifier to make a function callable only when the contract is not paused.
    */
   modifier whenNotPaused() {
-    require(!paused);
+    require(!paused, "already paused");
     _;
   }
 
@@ -82,7 +82,7 @@ contract Pausable is Ownable
    * @dev Modifier to make a function callable only when the contract is paused.
    */
   modifier whenPaused() {
-    require(paused);
+    require(paused, "not paused");
     _;
   }
 
@@ -162,8 +162,8 @@ contract BasicToken is ERC20Basic
   * @param _value The amount to be transferred.
   */
   function transfer(address _to, uint256 _value) public returns (bool) {
-    require(_to != address(0));
-    require(_value <= balances[msg.sender]);
+    require(_to != address(0), "not to self");
+    require(_value <= balances[msg.sender], "overwithdrawn");
 
     balances[msg.sender] = balances[msg.sender].sub(_value);
     balances[_to] = balances[_to].add(_value);
@@ -322,12 +322,12 @@ contract FrozenableToken is Ownable
     event FrozenFunds(address indexed to, bool frozen);
 
     modifier whenNotFrozen(address _who) {
-      require(!frozenAccount[msg.sender] && !frozenAccount[_who]);
+      require(!frozenAccount[msg.sender] && !frozenAccount[_who], "account frozen");
       _;
     }
 
     function setApprover(address _wallet, bool _approve) public {
-        require(msg.sender == owner);
+        require(msg.sender == owner, "lack permissioin");
 
         Approvers[_wallet] = _approve;
 
@@ -336,8 +336,8 @@ contract FrozenableToken is Ownable
     }
 
     function freezeAccount(address _to, bool _freeze) public {
-        require(true == Approvers[msg.sender]);
-        require(_to != address(0));
+        require(true == Approvers[msg.sender], "lack permissioin");
+        require(_to != address(0), "not to self");
 
         frozenAccount[_to] = _freeze;
         emit FrozenFunds(_to, _freeze);
@@ -384,8 +384,8 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
 {
     using SafeMath for uint256;
 
-    string public name = "hi Dollars";
-    string public symbol = "HI";
+    string public name = "hi Dollars for test";
+    string public symbol = "BI";
     uint256 public decimals = 18;
     // uint256 INITIAL_SUPPLY = 10 *(10 ** 5) * (10 ** uint256(decimals));
     uint256 INITIAL_SUPPLY = 0;
@@ -448,7 +448,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
     
    
     function setProposer(address _wallet, bool _on) public{
-        require(msg.sender == owner);
+        require(msg.sender == owner, "lack permission");
 
         Proposers[_wallet] = _on;
 
@@ -461,7 +461,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
      *  index ranges from 0..totalHolders -1
      */
     function setMintSplitHolder(uint index, address _wallet, uint64 _ratio) public returns (bool) {
-        require(msg.sender == owner);
+        require(msg.sender == owner, "lack permissioin");
 
         if (index > totalHolders_ - 1)
           return false;
@@ -478,7 +478,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
     * @return mint propose ID
     */
     function proposeMint(uint256 _amount) public returns(bool) {
-        require(true == Proposers[msg.sender]);
+        require(true == Proposers[msg.sender], "lack permissioin");
 
         Proposals[msg.sender] = _amount; //mint once for a propoer at a time otherwise would be overwritten
         return true;
