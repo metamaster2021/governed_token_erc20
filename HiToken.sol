@@ -415,13 +415,6 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
         balances[msg.sender] = totalSupply;
         emit Transfer(address(0), msg.sender, totalSupply);
     }
-
-    /**
-     * if ether is sent to this address, send it back.
-     */
-    function() public payable {
-        revert();
-    }
  
     /**
      * @dev transfer token for a specified address
