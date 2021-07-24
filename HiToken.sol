@@ -387,10 +387,11 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
     string public name = "hi Dollars for test";
     string public symbol = "BI";
     uint256 public decimals = 18;
+    uint public totalHolders = 6; // total number is fixed, wont change in future
+                                  // but holders address can be updated thru setMintSplitHolder method
+
     // uint256 INITIAL_SUPPLY = 10 *(10 ** 5) * (10 ** uint256(decimals));
-    uint256 INITIAL_SUPPLY = 0;
-    uint totalHolders_ = 6;  // total number is fixed, wont change in future
-                             // but holders address can be updated thru setMintSplitHolder method
+    uint256 private INITIAL_SUPPLY = 0;
 
     mapping (uint => address) public holders;
     mapping (uint => uint256) public MintSplitHolderRatios; //index -> ratio boosted by 10000
@@ -459,7 +460,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
      *  index ranges from 0..totalHolders -1
      */
     function setMintSplitHolder(uint index, address _wallet, uint64 _ratio) public onlyOwner returns (bool) {
-        if (index > totalHolders_ - 1)
+        if (index > totalHolders - 1)
           return false;
 
         holders[ index ] = _wallet;
@@ -489,19 +490,19 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
       }
 
       require( _amount > 0, "zero amount not allowed" );
-      require( totalHolders_ > 0, "Err: none account holder" );
+      require( totalHolders > 0, "Err: none account holder" );
       require( Proposals[_proposer] >= _amount, "Over-approve mint amount not allowed" );
 
       uint256 unsplitted = _amount;
       address _to;
-      for (uint8 i = 0; i < totalHolders_ - 1; i++) {
+      for (uint8 i = 0; i < totalHolders - 1; i++) {
         _to = holders[i];
         uint256 _amt = _amount.mul(MintSplitHolderRatios[i]).div(10000);
         unsplitted -= _amt;
         _mint(_to, _amt);
       }
 
-      _to = holders[totalHolders_ - 1];
+      _to = holders[totalHolders - 1];
       _mint(_to, unsplitted); //for the last holder in the list
 
       Proposals[_proposer] -= _amount;
