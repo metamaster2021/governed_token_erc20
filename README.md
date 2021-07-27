@@ -1,1 +1,1 @@
-# hiTokenERC20
+# `hi Dollar` ERC20 Smart Contract
