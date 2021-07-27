@@ -14,7 +14,7 @@ import './SafeMath.sol';
 contract Ownable 
 {
   address public owner;
-  address proposedOwner;
+  address private proposedOwner;
 
   event OwnershipRenounced(address indexed previousOwner);
   event OwnershipTransferred(
@@ -35,7 +35,7 @@ contract Ownable
    * @dev Throws if called by any account other than the owner.
    */
   modifier onlyOwner() {
-    require(msg.sender == owner, "lack permissioin");
+    require(msg.sender == owner, "lack permission");
     _;
   }
 
@@ -60,7 +60,7 @@ contract Ownable
    * @param _newOwner The address to transfer ownership to.
    */
   function _transferOwnership(address _newOwner) internal {
-    require(_newOwner != address(0), "lack permissioin");
+    require(_newOwner != address(0), "lack permission");
     emit OwnershipTransferred(owner, _newOwner);
     owner = _newOwner;
   }
@@ -163,8 +163,6 @@ contract BasicToken is ERC20Basic
   * @param _value The amount to be transferred.
   */
   function transfer(address _to, uint256 _value) public returns (bool) {
-    require(_to != address(0), "not to self");
-
     balances[msg.sender] = balances[msg.sender].sub(_value);
     balances[_to] = balances[_to].add(_value);
     emit Transfer(msg.sender, _to, _value);
@@ -463,7 +461,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
     * @return mint propose ID
     */
     function proposeMint(uint256 _amount) public returns(bool) {
-        require(true == Proposers[msg.sender], "Non-proposer not allowed");
+        require(Proposers[msg.sender], "Non-proposer not allowed");
 
         Proposals[msg.sender] = _amount; //mint once for a propoer at a time otherwise would be overwritten
         return true;
