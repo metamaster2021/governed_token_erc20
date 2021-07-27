@@ -445,7 +445,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
      *  to update an split holder ratio at the index
      *  index ranges from 0..totalHolders -1
      */
-    function setMintSplitHolder(uint index, address _wallet, uint64 _ratio) public onlyOwner returns (bool) {
+    function setMintSplitHolder(uint256 index, address _wallet, uint256 _ratio) public onlyOwner returns (bool) {
         if (index > totalHolders - 1)
           return false;
 
@@ -480,7 +480,7 @@ contract HiToken is PausableToken, FrozenableToken, MintableToken
 
       uint256 unsplitted = _amount;
       address _to;
-      for (uint8 i = 0; i < totalHolders - 1; i++) {
+      for (uint256 i = 0; i < totalHolders - 1; i++) {
         _to = holders[i];
         uint256 _amt = _amount.mul(MintSplitHolderRatios[i]).div(10000);
         unsplitted.sub(_amt);
