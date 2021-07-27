@@ -373,7 +373,7 @@ contract MintableToken is StandardToken, Ownable {
  * @dev Global digital painting asset platform token.
  * @author HiToken 
  */
-contract HiToken is PausableToken, FrozenableToken, MintableToken
+contract hiDollarToken is PausableToken, FrozenableToken, MintableToken
 {
     using SafeMath for uint256;
 
