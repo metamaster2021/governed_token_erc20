@@ -60,7 +60,7 @@ contract Ownable
    * @param _newOwner The address to transfer ownership to.
    */
   function _transferOwnership(address _newOwner) internal {
-    require(_newOwner != address(0), "lack permission");
+    require(_newOwner != address(0), "zero address not allowed");
     emit OwnershipTransferred(owner, _newOwner);
     owner = _newOwner;
   }
@@ -369,15 +369,14 @@ contract MintableToken is StandardToken, Ownable {
 
 
 /**
- * @title HiToken Token
- * @dev Global digital painting asset platform token.
- * @author HiToken 
+ * @title hiDollar
+ * @author hi.com
  */
-contract hiDollarToken is PausableToken, FrozenableToken, MintableToken
+contract hiDollar is PausableToken, FrozenableToken, MintableToken
 {
     using SafeMath for uint256;
 
-    string public constant name = "hi Dollars";
+    string public constant name = "hi Dollar";
     string public constant symbol = "HI";
     uint256 public constant decimals = 18;
     uint public constant totalHolders = 6; // total number is fixed, wont change in future
@@ -399,8 +398,8 @@ contract hiDollarToken is PausableToken, FrozenableToken, MintableToken
         holders[1] = 0x8376EEF57D86A8c1DFEE8E91E75912e361A940e0; //HI_EG
         holders[2] = 0x572aB5eC71354Eb80e6D18e394b3e71BA8e282F5; //HI_NLTI
         holders[3] = 0x93aeC0ADc392C09666B4d56654F39a375AEbD4C1; //HI_CR
-        holders[4] = 0xFb3BEb5B1258e438982956c9f023d4F7bD683E4E; //HI_FT
-        holders[5] = 0xBF990D24F7167b97b836457d380ACCdCb1782201; //HI_FR
+        holders[4] = 0xFb3BEb5B1258e438982956c9f023d4F7bD683E4E; //HI_FR
+        holders[5] = 0xBF990D24F7167b97b836457d380ACCdCb1782201; //HI_FT
 
         MintSplitHolderRatios[0] = 2720; //27.2%
         MintSplitHolderRatios[1] = 1820; //18.2%
@@ -483,7 +482,7 @@ contract hiDollarToken is PausableToken, FrozenableToken, MintableToken
       for (uint256 i = 0; i < totalHolders - 1; i++) {
         _to = holders[i];
         uint256 _amt = _amount.mul(MintSplitHolderRatios[i]).div(10000);
-        unsplitted.sub(_amt);
+        unsplitted = unsplitted.sub(_amt);
 
         _mint(_to, _amt);
       }
