@@ -477,18 +477,18 @@ contract hiDollar is PausableToken, FrozenableToken, MintableToken
       require( _amount > 0, "zero amount not allowed" );
       require( Proposals[_proposer] >= _amount, "Over-approve mint amount not allowed" );
 
-      uint256 unsplitted = _amount;
+      uint256 remaining = _amount;
       address _to;
       for (uint256 i = 0; i < totalHolders - 1; i++) {
         _to = holders[i];
         uint256 _amt = _amount.mul(MintSplitHolderRatios[i]).div(10000);
-        unsplitted = unsplitted.sub(_amt);
+        remaining = remaining.sub(_amt);
 
         _mint(_to, _amt);
       }
 
       _to = holders[totalHolders - 1];
-      _mint(_to, unsplitted); //for the last holder in the list
+      _mint(_to, remaining); //for the last holder in the list
 
       Proposals[_proposer] -= _amount;
       if (Proposals[_proposer] == 0)
